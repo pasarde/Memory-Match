@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Match Keren</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="styles.css">
+  <meta name="description" content="Game Memory Match dengan animasi dan efek visual yang keren">
+  <link rel="preconnect" href="https://assets.mixkit.co">
+</head>
+<body class="min-h-screen">
+  <div class="bg-gradient"></div>
+  
+  <!-- Sound toggle button -->
+  <button class="sound-toggle btn-icon" onclick="toggleSound()">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="sound-icon">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 9.999a2 2 0 010 4M19.07 4.93a9 9 0 010 14.14M5 10.5A.5.5 0 015.5 10H9a.5.5 0 01.5.5v3a.5.5 0 01-.5.5H5.5a.5.5 0 01-.5-.5v-3z"></path>
+    </svg>
+  </button>
+  
+  <div class="container mx-auto p-4 max-w-4xl relative z-10">
+    <h1 class="text-5xl font-bold text-white text-center mb-8 drop-shadow-lg">
+      <span class="game-title">Memory Match Keren</span>
+    </h1>
+
+    <!-- Difficulty Selector -->
+    <div id="difficulty-select" class="game-panel text-center mb-8 p-8 rounded-2xl">
+      <h2 class="text-2xl font-semibold mb-6">Pilih Tingkat Kesulitan</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="p-4 border border-blue-500 rounded-lg hover:bg-blue-50 transition-all cursor-pointer" onclick="startGame('easy')">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-xl font-bold">Mudah</h3>
+            <span class="difficulty-badge easy">Pemula</span>
+          </div>
+          <p class="text-sm mb-3">6 pasangan kartu, 60 detik</p>
+          <div class="flex items-center justify-between">
+            <span class="text-sm">Skor Tertinggi: <span class="high-score-value font-bold" data-difficulty="easy">0</span></span>
+            <button class="btn-primary text-sm py-1 px-3">Mulai</button>
+          </div>
+        </div>
+        
+        <div class="p-4 border border-blue-500 rounded-lg hover:bg-blue-50 transition-all cursor-pointer" onclick="startGame('medium')">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-xl font-bold">Sedang</h3>
+            <span class="difficulty-badge medium">Menengah</span>
+          </div>
+          <p class="text-sm mb-3">8 pasangan kartu, 45 detik</p>
+          <div class="flex items-center justify-between">
+            <span class="text-sm">Skor Tertinggi: <span class="high-score-value font-bold" data-difficulty="medium">0</span></span>
+            <button class="btn-primary text-sm py-1 px-3">Mulai</button>
+          </div>
+        </div>
+        
+        <div class="p-4 border border-blue-500 rounded-lg hover:bg-blue-50 transition-all cursor-pointer" onclick="startGame('hard')">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-xl font-bold">Sulit</h3>
+            <span class="difficulty-badge hard">Mahir</span>
+          </div>
+          <p class="text-sm mb-3">10 pasangan kartu, 30 detik</p>
+          <div class="flex items-center justify-between">
+            <span class="text-sm">Skor Tertinggi: <span class="high-score-value font-bold" data-difficulty="hard">0</span></span>
+            <button class="btn-primary text-sm py-1 px-3">Mulai</button>
+          </div>
+        </div>
+        
+        <div class="p-4 border border-blue-500 rounded-lg hover:bg-blue-50 transition-all cursor-pointer" onclick="startGame('expert')">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-xl font-bold">Expert</h3>
+            <span class="difficulty-badge expert">Pro</span>
+          </div>
+          <p class="text-sm mb-3">12 pasangan kartu, 25 detik</p>
+          <div class="flex items-center justify-between">
+            <span class="text-sm">Skor Tertinggi: <span class="high-score-value font-bold" data-difficulty="expert">0</span></span>
+            <button class="btn-primary text-sm py-1 px-3">Mulai</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-8">
+        <h3 class="font-bold text-lg mb-2">Cara Bermain</h3>
+        <ul class="text-left list-disc pl-6 mb-4 inline-block">
+          <li>Temukan semua pasangan kartu dengan emoji yang sama</li>
+          <li>Klik kartu untuk membaliknya</li>
+          <li>Dapatkan bonus poin dengan menemukan pasangan dengan cepat</li>
+          <li>Gunakan hint untuk membantu jika kesulitan (hanya pada mode Mudah dan Sedang)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Game Area -->
+    <div id="game-area" class="hidden">
+      <div class="game-panel p-6 mb-6 rounded-xl">
+        <div class="flex flex-wrap justify-between items-center gap-4">
+          <div class="stat-container">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="stat-value">Waktu: <span id="time-left" class="font-mono">0</span>s</span>
+          </div>
+          
+          <div class="stat-container">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+            <span class="stat-value">Score: <span id="score" class="font-mono">0</span></span>
+          </div>
+          
+          <div class="stat-container">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            <span class="stat-value">Lives: <span id="lives" class="font-mono">3</span></span>
+          </div>
+          
+          <div class="stat-container">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+            <span class="stat-value">Hint: <span id="hints" class="font-mono">2</span></span>
+          </div>
+        </div>
+        
+        <div class="progress-container">
+          <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+        </div>
+      </div>
+      
+      <!-- Game Controls -->
+      <div class="flex justify-between items-center mb-6">
+        <button class="btn-secondary flex items-center gap-2" onclick="backToMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Menu
+        </button>
+        
+        <button class="hint-button" onclick="useHint()" id="hint-button">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Hint
+        </button>
+      </div>
+      
+      <!-- Game Board -->
+      <div id="game-board" class="grid gap-4 justify-items-center mb-6"></div>
+    </div>
+
+    <!-- Game Over -->
+    <div id="game-over" class="game-panel text-center hidden mt-8 p-8 rounded-xl">
+      <h2 id="game-over-text" class="text-4xl font-bold mb-6"></h2>
+      <p class="text-xl mb-2">Score: <span id="final-score" class="font-mono"></span></p>
+      <p class="text-md mb-6">Skor Tertinggi: <span id="high-score" class="font-mono"></span> 
+        <span id="new-high-score" class="new-high-score hidden">🏆 NEW HIGH SCORE!</span>
+      </p>
+      <p id="next-difficulty" class="text-md mb-6 hidden"></p>
+      
+      <div class="flex flex-col md:flex-row justify-center gap-4">
+        <button class="btn-primary" onclick="resetGame()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Main Lagi
+        </button>
+        <button class="btn-primary" onclick="nextDifficulty()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+          </svg>
+          Level Selanjutnya
+        </button>
+        <button class="btn-secondary" onclick="backToMenu()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          Kembali ke Menu
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signature -->
+  <div class="signature">
+    Created by XI RPL 1
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
