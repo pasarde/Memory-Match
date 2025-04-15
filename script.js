@@ -221,16 +221,20 @@ function renderCards() {
 
   document.body.className = `theme-${currentTheme} ${darkMode ? 'dark-mode' : ''}`;
 
-  let gridClass;
-  switch (difficulty) {
-    case 'easy': gridClass = 'grid-cols-3 sm:grid-cols-4'; break;
-    case 'medium': gridClass = 'grid-cols-4 sm:grid-cols-4'; break;
-    case 'hard': gridClass = 'grid-cols-4 sm:grid-cols-5'; break;
-    case 'expert': gridClass = 'grid-cols-4 sm:grid-cols-6'; break;
-    default: gridClass = 'grid-cols-4';
+  // Hitung grid berdasarkan jumlah kartu
+  const totalCards = cards.length;
+  let columns;
+  if (totalCards <= 12) {
+    columns = Math.ceil(Math.sqrt(totalCards)); // Cenderung persegi
+  } else {
+    columns = Math.ceil(totalCards / 4); // Maks 4 baris buat readability
   }
+  columns = Math.min(columns, 6); // Batasi biar ga terlalu lebar
+  const rows = Math.ceil(totalCards / columns);
+  gameBoard.style.gridTemplateColumns = `repeat(${columns}, minmax(0, 1fr))`;
+  gameBoard.style.gridTemplateRows = `repeat(${rows}, minmax(0, 1fr))`;
 
-  gameBoard.className = `grid ${gridClass} gap-3 sm:gap-4 justify-center`;
+  gameBoard.className = `grid gap-2 sm:gap-3 justify-center`;
 
   let delay = 0;
   cards.forEach(card => {
@@ -757,10 +761,23 @@ function resumeGame() {
 }
 
 function resetGame() {
+  console.log('Resetting game...'); // Debug
   clearInterval(timerInterval);
+  isPaused = false;
+  flippedCards = [];
+  matchedPairs = [];
+  comboCount = 0;
+  powerUpsUsed = { timeFreeze: false, revealAll: false };
+  document.getElementById('game-over').classList.add('hidden');
+  document.getElementById('pause-menu').classList.add('hidden');
+  
   if (isMultiplayer) {
+    players[0].score = 0;
+    players[1].score = 0;
+    currentPlayer = 0;
     startMultiplayer();
   } else {
+    score = 0;
     startGame(difficulty);
   }
 }

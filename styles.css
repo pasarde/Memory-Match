@@ -157,12 +157,15 @@ body {
   right: 4rem;
 }
 
+.test-sound {
+  right: 7rem;
+}
+
 .card {
-  width: 6rem;
-  height: 6rem;
+  width: 5rem;
+  height: 5rem;
   perspective: 1000px;
   cursor: pointer;
-  margin: 0 auto;
   position: relative;
 }
 
@@ -534,9 +537,11 @@ body.dark-mode .theme-space .card-back {
   margin-bottom: 3rem;
   display: grid;
   gap: 0.5rem;
+  width: 100%;
+  justify-content: center;
 }
 
-/* Responsive untuk Android dan layar kecil */
+/* Mobile */
 @media (max-width: 640px) {
   .container {
     padding: 0.5rem;
@@ -558,19 +563,22 @@ body.dark-mode .theme-space .card-back {
     height: 1rem;
   }
 
-  .card {
-    width: 4rem;
-    height: 4rem;
-  }
-
-  .card-back, .card-front {
-    font-size: 1.25rem;
-  }
-
   #game-board {
     gap: 0.3rem;
     margin-bottom: 4rem;
-    grid-template-columns: repeat(auto-fit, minmax(4rem, 1fr));
+  }
+
+  .card {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .card-back, .card-front {
+    font-size: 1.5rem;
+  }
+
+  .card-question {
+    font-size: 1.5rem;
   }
 
   .btn-primary, .btn-secondary, .hint-button {
@@ -579,16 +587,23 @@ body.dark-mode .theme-space .card-back {
   }
 }
 
-/* Optimasi buat tablet */
+/* Tablet */
 @media (min-width: 641px) and (max-width: 768px) {
-  .card {
-    width: 5.5rem;
-    height: 5.5rem;
-  }
-
   #game-board {
     gap: 0.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr));
+  }
+
+  .card {
+    width: 4.5rem;
+    height: 4.5rem;
+  }
+
+  .card-back, .card-front {
+    font-size: 1.75rem;
+  }
+
+  .card-question {
+    font-size: 1.75rem;
   }
 }
 
@@ -633,17 +648,17 @@ body.dark-mode .theme-space .card-back {
 }
 
 /* Screen transitions */
-#difficulty-select, #game-area, #game-over, #multiplayer-name-input {
+#difficulty-select, #game-area, #game-over, #multiplayer-name-input, #player-name-input {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-#difficulty-select.hidden, #game-area.hidden, #game-over.hidden, #multiplayer-name-input.hidden {
+#difficulty-select.hidden, #game-area.hidden, #game-over.hidden, #multiplayer-name-input.hidden, #player-name-input.hidden {
   opacity: 0;
   transform: translateY(20px);
   pointer-events: none;
 }
 
-#difficulty-select:not(.hidden), #game-area:not(.hidden), #game-over:not(.hidden), #multiplayer-name-input:not(.hidden) {
+#difficulty-select:not(.hidden), #game-area:not(.hidden), #game-over:not(.hidden), #multiplayer-name-input:not(.hidden), #player-name-input:not(.hidden) {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
