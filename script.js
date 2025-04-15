@@ -26,12 +26,12 @@ let highScores = JSON.parse(localStorage.getItem('memoryMatchHighScores')) || {
 
 // Preload sounds
 const sounds = {
-  flip: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-quick-jump-arcade-game-239.mp3'),
-  match: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-bonus-earned-in-video-game-2058.mp3'),
-  wrong: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-negative-tone-interface-tap-2569.mp3'),
-  win: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3'),
-  lose: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3'),
-  hint: new Audio('https://assets.mixkit.co/sfx/preview/mixkit-magical-coin-win-1936.mp3')
+  flip: new Audio('/assets/oh-[AudioTrimmer.com].opus'),
+  match: new Audio('/assets/benar-[AudioTrimmer.com].opus'),
+  wrong: new Audio('/assets/salah-[AudioTrimmer.com].opus'),
+  win: new Audio('/assets/win-[AudioTrimmer.com].opus'),
+  lose: new Audio('/assets/lose-[AudioTrimmer.com].opus'),
+  hint: new Audio('/assets/hint-[AudioTrimmer.com].opus')
 };
 
 // Load sounds
