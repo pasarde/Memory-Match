@@ -6,116 +6,200 @@
   <title>Memory Match Keren</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="styles.css">
-  <meta name="description" content="Game Memory Match dengan animasi dan efek visual yang keren">
-  <link rel="preconnect" href="https://assets.mixkit.co">
+  <meta name="description" content="Game Memory Match dengan animasi, efek visual, dan multiplayer seru">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
 </head>
 <body class="min-h-screen">
   <div class="bg-gradient"></div>
   
   <!-- Sound toggle button -->
-  <button class="sound-toggle btn-icon" onclick="toggleSound()">
+  <button class="sound-toggle btn-icon" onclick="toggleSound()" aria-label="Toggle sound">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="sound-icon">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 9.999a2 2 0 010 4M19.07 4.93a9 9 0 010 14.14M5 10.5A.5.5 0 015.5 10H9a.5.5 0 01.5.5v3a.5.5 0 01-.5.5H5.5a.5.5 0 01-.5-.5v-3z"></path>
     </svg>
   </button>
   
+  <!-- Dark mode toggle -->
+  <button class="dark-mode-toggle btn-icon" onclick="toggleDarkMode()" aria-label="Toggle dark mode">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="dark-mode-icon">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+    </svg>
+  </button>
+  
   <div class="container mx-auto p-4 max-w-4xl relative z-10">
-    <h1 class="text-5xl font-bold text-white text-center mb-8 drop-shadow-lg">
+    <h1 class="text-4xl md:text-5xl font-bold text-white text-center mb-8 drop-shadow-md">
       <span class="game-title">Memory Match Keren</span>
     </h1>
 
+    <!-- Player Name Input -->
+    <div id="player-name-input" class="game-panel text-center mb-8 p-6 md:p-8 rounded-2xl hidden">
+      <h2 class="text-xl md:text-2xl font-semibold mb-6">Masukkan Nama</h2>
+      <input type="text" id="player-name" class="p-2 rounded-lg border border-blue-500 mb-4 w-full max-w-xs text-center" placeholder="Nama Pemain" maxlength="20">
+      <button class="btn-primary" onclick="savePlayerName()">Mulai Bermain</button>
+    </div>
+
+    <!-- Multiplayer Name Input -->
+    <div id="multiplayer-name-input" class="game-panel text-center mb-8 p-6 md:p-8 rounded-2xl hidden">
+      <h2 class="text-xl md:text-2xl font-semibold mb-6">Masukkan Nama Pemain</h2>
+      <input type="text" id="player1-name" class="p-2 rounded-lg border border-blue-500 mb-4 w-full max-w-xs text-center" placeholder="Nama Pemain 1" maxlength="20">
+      <input type="text" id="player2-name" class="p-2 rounded-lg border border-blue-500 mb-4 w-full max-w-xs text-center" placeholder="Nama Pemain 2" maxlength="20">
+      <button class="btn-primary" onclick="startMultiplayer()">Mulai Multiplayer</button>
+    </div>
+
     <!-- Difficulty Selector -->
-    <div id="difficulty-select" class="game-panel text-center mb-8 p-8 rounded-2xl">
-      <h2 class="text-2xl font-semibold mb-6">Pilih Tingkat Kesulitan</h2>
+    <div id="difficulty-select" class="game-panel text-center mb-8 p-6 md:p-8 rounded-2xl">
+      <h2 class="text-xl md:text-2xl font-semibold mb-6">Pilih Mode & Tingkat Kesulitan</h2>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <!-- Mode Selector -->
+      <div class="mb-6">
+        <label for="mode-select" class="block text-lg font-semibold mb-2">Pilih Mode</label>
+        <select id="mode-select" class="p-2 rounded-lg border border-blue-500 w-full max-w-xs" onchange="toggleMode()">
+          <option value="single">Single Player</option>
+          <option value="multiplayer">Multiplayer</option>
+        </select>
+      </div>
+      
+      <!-- Theme Selector -->
+      <div class="mb-6">
+        <label for="theme-select" class="block text-lg font-semibold mb-2">Pilih Tema</label>
+        <select id="theme-select" class="p-2 rounded-lg border border-blue-500 w-full max-w-xs">
+          <option value="classic">Klasik (Hewan)</option>
+          <option value="fruits">Buah-Buahan</option>
+          <option value="space">Luar Angkasa</option>
+        </select>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8">
         <div class="p-4 border border-blue-500 rounded-lg hover:bg-blue-50 transition-all cursor-pointer" onclick="startGame('easy')">
           <div class="flex justify-between items-center mb-2">
-            <h3 class="text-xl font-bold">Mudah</h3>
+            <h3 class="text-lg md:text-xl font-bold">Mudah</h3>
             <span class="difficulty-badge easy">Pemula</span>
           </div>
           <p class="text-sm mb-3">6 pasangan kartu, 60 detik</p>
           <div class="flex items-center justify-between">
             <span class="text-sm">Skor Tertinggi: <span class="high-score-value font-bold" data-difficulty="easy">0</span></span>
-            <button class="btn-primary text-sm py-1 px-3">Mulai</button>
+            <button class="btn-primary text-sm py-2 px-4">Mulai</button>
           </div>
         </div>
         
         <div class="p-4 border border-blue-500 rounded-lg hover:bg-blue-50 transition-all cursor-pointer" onclick="startGame('medium')">
           <div class="flex justify-between items-center mb-2">
-            <h3 class="text-xl font-bold">Sedang</h3>
+            <h3 class="text-lg md:text-xl font-bold">Sedang</h3>
             <span class="difficulty-badge medium">Menengah</span>
           </div>
           <p class="text-sm mb-3">8 pasangan kartu, 45 detik</p>
           <div class="flex items-center justify-between">
             <span class="text-sm">Skor Tertinggi: <span class="high-score-value font-bold" data-difficulty="medium">0</span></span>
-            <button class="btn-primary text-sm py-1 px-3">Mulai</button>
+            <button class="btn-primary text-sm py-2 px-4">Mulai</button>
           </div>
         </div>
         
         <div class="p-4 border border-blue-500 rounded-lg hover:bg-blue-50 transition-all cursor-pointer" onclick="startGame('hard')">
           <div class="flex justify-between items-center mb-2">
-            <h3 class="text-xl font-bold">Sulit</h3>
+            <h3 class="text-lg md:text-xl font-bold">Sulit</h3>
             <span class="difficulty-badge hard">Mahir</span>
           </div>
           <p class="text-sm mb-3">10 pasangan kartu, 30 detik</p>
           <div class="flex items-center justify-between">
             <span class="text-sm">Skor Tertinggi: <span class="high-score-value font-bold" data-difficulty="hard">0</span></span>
-            <button class="btn-primary text-sm py-1 px-3">Mulai</button>
+            <button class="btn-primary text-sm py-2 px-4">Mulai</button>
           </div>
         </div>
         
         <div class="p-4 border border-blue-500 rounded-lg hover:bg-blue-50 transition-all cursor-pointer" onclick="startGame('expert')">
           <div class="flex justify-between items-center mb-2">
-            <h3 class="text-xl font-bold">Expert</h3>
+            <h3 class="text-lg md:text-xl font-bold">Expert</h3>
             <span class="difficulty-badge expert">Pro</span>
           </div>
           <p class="text-sm mb-3">12 pasangan kartu, 25 detik</p>
           <div class="flex items-center justify-between">
             <span class="text-sm">Skor Tertinggi: <span class="high-score-value font-bold" data-difficulty="expert">0</span></span>
-            <button class="btn-primary text-sm py-1 px-3">Mulai</button>
+            <button class="btn-primary text-sm py-2 px-4">Mulai</button>
           </div>
         </div>
       </div>
       
+      <!-- Leaderboard -->
       <div class="text-center mt-8">
-        <h3 class="font-bold text-lg mb-2">Cara Bermain</h3>
-        <ul class="text-left list-disc pl-6 mb-4 inline-block">
+        <h3 class="font-bold text-md md:text-lg mb-4">Papan Peringkat</h3>
+        <div class="mb-4">
+          <label for="leaderboard-filter" class="block text-sm font-semibold mb-2">Filter Level:</label>
+          <select id="leaderboard-filter" class="p-2 rounded-lg border border-blue-500 w-full max-w-xs" onchange="renderLeaderboard()">
+            <option value="all">Semua</option>
+            <option value="easy">Mudah</option>
+            <option value="medium">Sedang</option>
+            <option value="hard">Sulit</option>
+            <option value="expert">Expert</option>
+          </select>
+        </div>
+        <table class="mx-auto text-left text-sm md:text-base">
+          <thead>
+            <tr>
+              <th class="px-2 py-1">Nama</th>
+              <th class="px-2 py-1">Skor</th>
+              <th class="px-2 py-1">Level</th>
+              <th class="px-2 py-1">Mode</th>
+              <th class="px-2 py-1">Tanggal</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard"></tbody>
+        </table>
+      </div>
+      
+      <div class="text-center mt-8">
+        <h3 class="font-bold text-md md:text-lg mb-2">Cara Bermain</h3>
+        <ul class="text-left list-disc pl-6 mb-4 inline-block text-sm md:text-base">
           <li>Temukan semua pasangan kartu dengan emoji yang sama</li>
           <li>Klik kartu untuk membaliknya</li>
-          <li>Dapatkan bonus poin dengan menemukan pasangan dengan cepat</li>
-          <li>Gunakan hint untuk membantu jika kesulitan (hanya pada mode Mudah dan Sedang)</li>
+          <li>Single: Dapatkan bonus poin dengan cepat atau combo</li>
+          <li>Multiplayer: Gantian main, cocokkan kartu untuk skor</li>
+          <li>Gunakan hint atau power-up untuk membantu</li>
+          <li>Bagikan skor kamu ke teman!</li>
         </ul>
       </div>
     </div>
 
     <!-- Game Area -->
     <div id="game-area" class="hidden">
-      <div class="game-panel p-6 mb-6 rounded-xl">
-        <div class="flex flex-wrap justify-between items-center gap-4">
+      <div class="game-panel p-4 md:p-6 mb-6 rounded-xl">
+        <div class="flex flex-wrap justify-between items-center gap-3 md:gap-4">
+          <div class="stat-container" id="current-player-container">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 md:h-6 w-5 md:w-6 stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span class="stat-value">Giliran: <span id="current-player">Player 1</span></span>
+          </div>
+          
           <div class="stat-container">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 md:h-6 w-5 md:w-6 stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <span class="stat-value">Waktu: <span id="time-left" class="font-mono">0</span>s</span>
           </div>
           
           <div class="stat-container">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 md:h-6 w-5 md:w-6 stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
-            <span class="stat-value">Score: <span id="score" class="font-mono">0</span></span>
+            <span class="stat-value">Skor <span id="player1-name-label">Player 1</span>: <span id="player1-score" class="font-mono">0</span></span>
           </div>
           
           <div class="stat-container">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 md:h-6 w-5 md:w-6 stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+            <span class="stat-value">Skor <span id="player2-name-label">Player 2</span>: <span id="player2-score" class="font-mono">0</span></span>
+          </div>
+          
+          <div class="stat-container">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 md:h-6 w-5 md:w-6 stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
             <span class="stat-value">Lives: <span id="lives" class="font-mono">3</span></span>
           </div>
           
           <div class="stat-container">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 md:h-6 w-5 md:w-6 stat-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
             <span class="stat-value">Hint: <span id="hints" class="font-mono">2</span></span>
@@ -128,36 +212,95 @@
       </div>
       
       <!-- Game Controls -->
-      <div class="flex justify-between items-center mb-6">
-        <button class="btn-secondary flex items-center gap-2" onclick="backToMenu()">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Menu
-        </button>
+      <div class="flex flex-wrap justify-between items-center mb-4 md:mb-6 gap-2">
+        <div class="flex gap-2">
+          <button class="btn-secondary flex items-center gap-2" onclick="backToMenu()" aria-label="Kembali ke menu">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Menu
+          </button>
+          <button class="btn-secondary flex items-center gap-2" onclick="pauseGame()" aria-label="Jeda permainan">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m-7-3h10" />
+            </svg>
+            Pause
+          </button>
+        </div>
         
-        <button class="hint-button" onclick="useHint()" id="hint-button">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Hint
-        </button>
+        <div class="flex gap-2">
+          <button class="hint-button" onclick="useHint()" id="hint-button" aria-label="Gunakan hint" aria-describedby="hint-desc">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Hint
+          </button>
+          <span id="hint-desc" class="sr-only">Gunakan hint untuk menyorot sepasang kartu yang cocok</span>
+          
+          <button class="btn-primary" onclick="usePowerUp('timeFreeze')" id="time-freeze" disabled aria-label="Gunakan power-up Time Freeze" aria-describedby="time-freeze-desc">
+            <span>❄️</span> Time Freeze
+          </button>
+          <span id="time-freeze-desc" class="sr-only">Bekukan waktu selama 5 detik</span>
+          
+          <button class="btn-primary" onclick="usePowerUp('revealAll')" id="reveal-all" disabled aria-label="Gunakan power-up Reveal All" aria-describedby="reveal-all-desc">
+            <span>👁️</span> Reveal All
+          </button>
+          <span id="reveal-all-desc" class="sr-only">Tampilkan semua kartu sebentar</span>
+        </div>
+      </div>
+      
+      <!-- Pause Menu -->
+      <div id="pause-menu" class="game-panel text-center hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl max-w-sm w-full">
+          <h2 class="text-2xl font-bold mb-6">Game Paused</h2>
+          <div class="flex flex-col gap-3">
+            <button class="btn-primary" onclick="resumeGame()">Lanjut Main</button>
+            <button class="btn-primary" onclick="resetGame()">Main Ulang</button>
+            <button class="btn-secondary" onclick="backToMenu()">Kembali ke Menu</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Achievement Modal -->
+      <div id="achievement-modal" class="game-panel text-center hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl max-w-sm w-full">
+          <h2 class="text-2xl font-bold mb-4">Pencapaian Terbuka! 🎉</h2>
+          <p id="achievement-text" class="text-lg mb-6"></p>
+          <button class="btn-primary" onclick="closeAchievementModal()">OK</button>
+        </div>
       </div>
       
       <!-- Game Board -->
-      <div id="game-board" class="grid gap-4 justify-items-center mb-6"></div>
+      <div id="game-board" class="grid gap-3 md:gap-4 justify-items-center mb-6"></div>
+      
+      <!-- Loading -->
+      <div id="loading" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg flex flex-col items-center">
+          <div class="loading-spinner mb-4"></div>
+          <p class="text-lg font-semibold">Loading...</p>
+        </div>
+      </div>
     </div>
 
     <!-- Game Over -->
-    <div id="game-over" class="game-panel text-center hidden mt-8 p-8 rounded-xl">
-      <h2 id="game-over-text" class="text-4xl font-bold mb-6"></h2>
-      <p class="text-xl mb-2">Score: <span id="final-score" class="font-mono"></span></p>
-      <p class="text-md mb-6">Skor Tertinggi: <span id="high-score" class="font-mono"></span> 
+    <div id="game-over" class="game-panel text-center hidden mt-8 p-6 md:p-8 rounded-xl">
+      <h2 id="game-over-text" class="text-3xl md:text-4xl font-bold mb-6"></h2>
+      <p class="text-lg md:text-xl mb-2">Skor: <span id="final-score" class="font-mono"></span></p>
+      <p class="text-lg md:text-xl mb-2">Skor P1: <span id="final-player1-score" class="font-mono"></span></p>
+      <p class="text-lg md:text-xl mb-2">Skor P2: <span id="final-player2-score" class="font-mono"></span></p>
+      <p class="text-md md:text-lg mb-4">Skor Tertinggi: <span id="high-score" class="font-mono"></span> 
         <span id="new-high-score" class="new-high-score hidden">🏆 NEW HIGH SCORE!</span>
       </p>
-      <p id="next-difficulty" class="text-md mb-6 hidden"></p>
       
-      <div class="flex flex-col md:flex-row justify-center gap-4">
+      <!-- Achievements -->
+      <div id="achievements" class="mb-6 hidden">
+        <h3 class="font-bold text-lg mb-2">Pencapaian</h3>
+        <ul id="achievement-list" class="text-left list-disc pl-6 inline-block"></ul>
+      </div>
+      
+      <p id="next-difficulty" class="text-md nm:text-lg mb-6 hidden"></p>
+      
+      <div class="flex flex-col md:flex-row justify-center gap-3 md:gap-4">
         <button class="btn-primary" onclick="resetGame()">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -169,6 +312,12 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
           </svg>
           Level Selanjutnya
+        </button>
+        <button class="btn-primary" onclick="shareScore()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+          </svg>
+          Share Skor
         </button>
         <button class="btn-secondary" onclick="backToMenu()">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -182,9 +331,10 @@
 
   <!-- Signature -->
   <div class="signature">
-    Created by XI RPL 1
+    Created with 💻 by Ahmad Danu Ilham Din | XI RPL 1 | 2024
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
